@@ -1,19 +1,5 @@
 // Suppress Node.js warning about experimental fetch API
 // Ref: https://github.com/nodejs/node/issues/30810#issuecomment-1383184769
-const originalEmit = process.emit;
-process.emit = function (event, error) {
-  if (
-    event === "warning" &&
-    error.name === "ExperimentalWarning" &&
-    error.message.includes(
-      "Importing JSON modules is an experimental feature and might change at any time"
-    )
-  ) {
-    return false;
-  }
-
-  return originalEmit.apply(process, arguments);
-};
 let WebSocketServer, colors;
 try {
   WebSocketServer = (await import("ws")).WebSocketServer;
@@ -21,16 +7,24 @@ try {
 } catch (err) {
   console.error(
     "You forgot to install the dependencies.\n" +
-      "https://github.com/Meqativ/vendetta-debug#installing"
+      "https://github.com/meqativ/vendetta-debug#installing"
   );
   process.exit(1);
 }
-import { hostname } from "os";
-import repl from "repl";
-import { parseArgs } from "util";
-import * as fs from "fs/promises";
-import defaults from "./defaults.json" assert { type: "json" };
-
+import { hostname } from "node:os";
+import repl from "node:repl";
+import { parseArgs } from "node:util";
+import * as fs from "node:fs/promises";
+let defaults = {};
+try {
+	defaults = JSON.parse(await fs.readFile("./defaults.json"))
+} catch (e) {
+	console.error(
+		"Invalid defaults.json"
+	)	
+	console.error(e)
+	process.exit(1)
+}
 let isPrompting = false;
 const args = parseArgs({
   options: {
@@ -73,18 +67,9 @@ const args = parseArgs({
 if (args.values.noStyle) colors.enabled = false;
 
 if (args?.values.help || args?.values?.h) {
-  let cmdlu;
-  try {
-    cmdlu = (await import("command-line-usage")).default;
-    const { generate } = await import("./help.js");
-    console.log(generate(cmdlu));
-  } catch (err) {
-    console.error(err);
-    console.error(
-      "Optional dependencies required.\n" +
-        "Install them by executing 'npm i --include=optional' in the vendetta-debug repo folder"
-    );
-  }
+  let cmdlu = (await import("command-line-usage")).default;
+	const { generate } = await import("./help.js");
+	console.log(generate(cmdlu));
   process.exit(0);
 }
 // parse client,, stuff; TODO: decide whether COLORS below args parsing part looks better
@@ -211,7 +196,7 @@ if (silentLvl < 1)
       )})\n`
     ) +
       "Press Ctrl+C to exit.\n" +
-      "How to connect to the debugger: https://github.com/Meqativ/vendetta-debug/blob/master/README.md#connecting"
+      "How to connect to the debugger: https://github.com/meqativ/vendetta-debug/blob/master/README.md#connecting"
   );
 
 // Create websocket server and REPL, and wait for connection
@@ -225,7 +210,7 @@ wss.on("connection", (ws) => {
     debuggerLog(
       `Connected to ${client} over websocket, starting debug session`
     );
-
+	console.log("meow?")
   isPrompting = false; // REPL hasn't been created yet
   let finishCallback;
 
@@ -246,6 +231,7 @@ wss.on("connection", (ws) => {
   });
 
   // Create the REPL
+  console.log(Object.getOwnPropertyNames(repl))
   const rl = repl.start({
     eval: (inputRaw, ctx, filename, cb) => {
       try {
@@ -276,7 +262,7 @@ wss.on("connection", (ws) => {
         : discordColorise(data);
     },
   });
-  rl.setupHistory("./.vendetta-debugReplHistory", (err, repl) => {
+  rl.setupHistory("~/.config/vendetta-debug/.replHistory", (err, repl) => {
     if (err) return debuggerError(err);
     if (silentLvl < 2) debuggerLog("Prompt history loaded");
   });

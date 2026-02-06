@@ -42,7 +42,7 @@ export function generate(cmdlu) {
 					typeLabel: "{underline name} (string)",
 					type: String,
 					description: "Client name for which to adapt the debugger.\n"+
-					"Available choices: Vendetta, Enmity and None"+
+					"Available choices: Vendetta, Enmity and None"
 				},
 				{
 					name: "clientColor",

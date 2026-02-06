@@ -1,29 +1,28 @@
 # Vendetta Debugger
 
-A remote debugger for [Vendetta](https://github.com/vendetta-mod) and other mods, forked from [@colin273/enmity-debugger](https://github.com/colin273/enmity-debug). This connects over a websocket to the Discord app with a supported mod installed and allows you to execute JavaScript in the Discord app from the command line. The REPL in this debugger is a slightly modified version of the [default REPL in Node.js](https://nodejs.org/api/repl.html), including the same commands and some support for multi-line code snippets.
+A remote debugger for [Vendetta](https://github.com/vendetta-mod) and other mods (Kettu, ShiggyCord, Raincord, Enmity), forked from [@colin273/enmity-debugger](https://github.com/colin273/enmity-debug). This connects over a websocket to the Discord app with a supported mod installed and allows you to execute JavaScript in the Discord app from the command line. The REPL in this debugger is a slightly modified version of the [default REPL in Node.js](https://nodejs.org/api/repl.html), including the same commands and some support for multi-line code snippets.
 
 ## Installing
 
+0. Install Bun (node also works)
+Follow the instructions @ https://bun.sh/
+
 1. Download the debugger
 ```bash
-git clone https://github.com/Meqativ/vendetta-debug && cd vendetta-debug
+git clone https://github.com/meqativ/vendetta-debug && cd vendetta-debug
 ```
 
 2. Install the dependencies
 ```bash
-npm i --omit=optional
-```
-or, if you want `--help` and 21 more packages:
-```bash
-npm i --include=optional
+bun install
 ```
 
 ## Running
 
-To start the debugger, run this command from inside the `vendetta-debug` folder:
+To start the debugger, run the index.js file from the `vendetta-debug` folder:
 
 ```bash
-node .
+bun run ./index.js
 ```
 
 For help on the options, `--help` or [look here](options.md).
@@ -60,7 +59,7 @@ You can use an option in the devkitplus ([Direct](https://vd-plugins.github.io/p
 0. Install the plugin
 1. Open the plugin's settings
 2. Enable "Auto debugger"
-(You need to fill in the ["Debugger URL"](https://github.com/Meqativ/vendetta-debug#:~:text=Fill%20in%20your%20Debug%20URL) for it to connect properly)
+(You need to fill in the ["Debugger URL"](https://github.com/meqativ/vendetta-debug#:~:text=Fill%20in%20your%20Debug%20URL) for it to connect properly)
 
 ## Quitting
 
